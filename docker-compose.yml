@@ -1,0 +1,92 @@
+# version: "3.8"
+
+# services:
+#   postgres:
+#     image: 'postgres:latest'
+#     container_name: my-postgres-container
+#     environment:
+#       POSTGRES_PASSWORD: root
+      
+
+#   nginx:
+#     depends_on:
+#       - api
+#       - client
+#     restart: always
+#     build:
+#       dockerfile: Dockerfile.dev
+#       context: ./nginx
+#     ports:
+#       - '3000:80'
+
+#   api:
+#     build: 
+#       dockerfile: Dockerfile.dev
+#       context: ./chatserver
+#     volumes:
+#       - /app/node_modules
+#       - ./chatserver:/app
+#     environment:
+#       - DATABASE_NAME=postgres
+#       - DATABASE_HOST=localhost
+#       - DATABASE_USER=arpan
+#       - DATABASE_PASSWORD=root
+#       - DATABASE_PORT=5433
+
+#   client:
+#     stdin_open: true
+#     build: 
+#       dockerfile: Dockerfile.dev
+#       context: ./chat
+#     volumes:
+#       - /app/node_modules
+#       - ./chat:/app
+
+version: "3.8"
+
+services:
+  postgres:
+    image: 'postgres:latest'
+    container_name: my-postgres-container
+    environment:
+      POSTGRES_PASSWORD: root
+    ports:
+      - '5434:5432'  # Adjust the port as needed
+
+  nginx:
+    depends_on:
+      - api
+      - client
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - '3050:80'
+
+  api:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./chatserver
+    volumes:
+      - /app/node_modules
+      - ./chatserver:/app
+    environment:
+      - DATABASE_NAME=postgres
+      - DATABASE_HOST=localhost
+      - DATABASE_USER=arpan
+      - DATABASE_PASSWORD=root
+      - DATABASE_PORT=5434
+    ports:
+      - '8000:8000'  # Adjust the port as needed
+
+  client:
+    stdin_open: true
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./chat
+    volumes:
+      - /app/node_modules
+      - ./chat:/app
+    ports:
+      - '3000:3000'  # Adjust the port as needed
